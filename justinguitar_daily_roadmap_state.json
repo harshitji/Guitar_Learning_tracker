@@ -1,29 +1,27 @@
 {
   "Day 1": {
     "0": {
-      "state": "backlog",
+      "state": "completed",
       "notes": "",
       "checklist": [],
       "images": [],
       "startDate": "2026-07-10",
       "endDate": "2026-07-10",
-      "workedDates": [],
+      "workedDates": [
+        "2026-07-10"
+      ],
       "stateHistory": [
         {
-          "state": "backlog",
-          "timestamp": "2026-07-10T12:15:27.190Z"
+          "state": "completed",
+          "timestamp": "2026-07-10T13:03:35.823Z"
         },
         {
           "state": "in_progress",
-          "timestamp": "2026-07-10T12:16:27.190Z"
+          "timestamp": "2026-07-10T13:04:35.823Z"
         },
         {
           "state": "completed",
-          "timestamp": "2026-07-10T12:16:32.855Z"
-        },
-        {
-          "state": "backlog",
-          "timestamp": "2026-07-10T12:17:13.355Z"
+          "timestamp": "2026-07-10T13:05:02.039Z"
         }
       ],
       "tags": []
