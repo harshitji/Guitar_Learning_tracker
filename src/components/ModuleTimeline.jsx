@@ -193,6 +193,9 @@ export default function ModuleTimeline({
       notes:     stored?.notes     ?? task.notes     ?? '',
       checklist: stored?.checklist ?? task.checklist ?? [],
       images:    stored?.images    ?? task.images    ?? [],
+      startDate: stored?.startDate ?? '',
+      endDate:   stored?.endDate   ?? '',
+      workedDates: stored?.workedDates ?? []
     };
   };
 

@@ -1,1 +1,15 @@
-{}
+{
+  "Day 1": {
+    "0": {
+      "state": "completed",
+      "notes": "",
+      "checklist": [],
+      "images": [],
+      "startDate": "",
+      "endDate": "2026-07-10",
+      "workedDates": [
+        "2026-07-10"
+      ]
+    }
+  }
+}
