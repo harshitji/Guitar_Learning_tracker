@@ -12,20 +12,16 @@
       ],
       "stateHistory": [
         {
-          "state": "completed",
-          "timestamp": "2026-07-10T13:03:35.823Z"
+          "state": "revising",
+          "timestamp": "2026-07-10T14:05:47.020Z"
         },
         {
-          "state": "in_progress",
-          "timestamp": "2026-07-10T13:04:35.823Z"
-        },
-        {
-          "state": "completed",
-          "timestamp": "2026-07-10T13:05:02.039Z"
+          "state": "backlog",
+          "timestamp": "2026-07-10T14:06:47.020Z"
         },
         {
           "state": "revising",
-          "timestamp": "2026-07-10T13:58:01.126Z"
+          "timestamp": "2026-07-10T14:06:49.436Z"
         }
       ],
       "tags": []
