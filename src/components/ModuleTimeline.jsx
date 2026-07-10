@@ -195,8 +195,42 @@ export default function ModuleTimeline({
       images:    stored?.images    ?? task.images    ?? [],
       startDate: stored?.startDate ?? '',
       endDate:   stored?.endDate   ?? '',
-      workedDates: stored?.workedDates ?? []
+      workedDates: stored?.workedDates ?? [],
+      stateHistory: stored?.stateHistory ?? []
     };
+  };
+  const getStateDurationBreakdown = (history = []) => {
+    if (!history || history.length === 0) return null;
+    const durations = { backlog: 0, in_progress: 0, revising: 0, completed: 0 };
+    for (let i = 0; i < history.length; i++) {
+      const entry = history[i];
+      const start = new Date(entry.timestamp);
+      const end = (i + 1 < history.length) ? new Date(history[i + 1].timestamp) : new Date();
+      const diffMs = end - start;
+      const stateKey = entry.state;
+      if (durations[stateKey] !== undefined) {
+        durations[stateKey] += diffMs;
+      }
+    }
+    const formatDuration = (ms) => {
+      if (ms <= 0) return null;
+      const mins = Math.round(ms / 60000);
+      if (mins < 1) return '< 1m';
+      if (mins < 60) return `${mins}m`;
+      const hours = Math.round(mins / 60);
+      if (hours < 24) return `${hours}h`;
+      const days = Math.round(hours / 24);
+      return `${days}d`;
+    };
+    const parts = Object.entries(durations)
+      .map(([s, ms]) => {
+        const readable = formatDuration(ms);
+        if (!readable) return null;
+        const labels = { backlog: 'Todo', in_progress: 'WIP', revising: 'Rev', completed: 'Done' };
+        return `${labels[s]}: ${readable}`;
+      })
+      .filter(Boolean);
+    return parts.length > 0 ? parts.join(' • ') : null;
   };
 
   return (
@@ -500,7 +534,7 @@ export default function ModuleTimeline({
                             </div>
 
                             {/* Start / End Dates inputs */}
-                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem' }}>
+                            <div style={{ display: 'grid', gridTemplateColumns: task.state === 'completed' ? '1fr 1fr' : '1fr', gap: '0.75rem' }}>
                               <div>
                                 <label style={{ fontSize: '0.7rem', color: 'var(--text-muted)', display: 'block', marginBottom: '0.2rem' }}>Start Date</label>
                                 <input
@@ -514,20 +548,33 @@ export default function ModuleTimeline({
                                   }}
                                 />
                               </div>
-                              <div>
-                                <label style={{ fontSize: '0.7rem', color: 'var(--text-muted)', display: 'block', marginBottom: '0.2rem' }}>End Date</label>
-                                <input
-                                  type="date"
-                                  value={task.endDate || ''}
-                                  onChange={(e) => onEndDateChange(dayObj.day, actIdx, e.target.value)}
-                                  style={{
-                                    width: '100%', backgroundColor: 'rgba(0,0,0,0.3)',
-                                    border: `1px solid ${cfg.border}`, color: 'var(--text-primary)',
-                                    padding: '0.35rem 0.5rem', borderRadius: '6px', fontSize: '0.75rem'
-                                  }}
-                                />
-                              </div>
+                              {task.state === 'completed' && (
+                                <div>
+                                  <label style={{ fontSize: '0.7rem', color: 'var(--text-muted)', display: 'block', marginBottom: '0.2rem' }}>End Date</label>
+                                  <input
+                                    type="date"
+                                    value={task.endDate || ''}
+                                    onChange={(e) => onEndDateChange(dayObj.day, actIdx, e.target.value)}
+                                    style={{
+                                      width: '100%', backgroundColor: 'rgba(0,0,0,0.3)',
+                                      border: `1px solid ${cfg.border}`, color: 'var(--text-primary)',
+                                      padding: '0.35rem 0.5rem', borderRadius: '6px', fontSize: '0.75rem'
+                                    }}
+                                  />
+                                </div>
+                              )}
                             </div>
+
+                            {/* Status durations display */}
+                            {getStateDurationBreakdown(task.stateHistory) && (
+                              <div style={{
+                                fontSize: '0.72rem', color: 'var(--text-secondary)',
+                                background: 'rgba(255,255,255,0.01)', border: '1px dashed rgba(255,255,255,0.05)',
+                                padding: '0.4rem 0.6rem', borderRadius: '6px', marginTop: '0.25rem'
+                              }}>
+                                <span style={{ fontWeight: 700, color: cfg.color }}>Time in states:</span> {getStateDurationBreakdown(task.stateHistory)}
+                              </div>
+                            )}
 
                             {/* Worked Days Log list */}
                             <div style={{ marginTop: '0.25rem' }}>

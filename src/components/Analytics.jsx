@@ -154,6 +154,54 @@ export default function Analytics({ sections, stateData = {} }) {
     return `${diff} cal days`;
   };
 
+  // Compute average time spent in states across all logged tasks
+  const stateDurationsSum = { in_progress: 0, revising: 0, completed: 0, backlog: 0 };
+  const stateCounts = { in_progress: 0, revising: 0, completed: 0, backlog: 0 };
+
+  Object.values(stateData).forEach(dayObj => {
+    Object.values(dayObj).forEach(taskState => {
+      const history = taskState.stateHistory || [];
+      if (history.length > 0) {
+        const enteredStates = new Set();
+        const taskDurations = { backlog: 0, in_progress: 0, revising: 0, completed: 0 };
+
+        for (let i = 0; i < history.length; i++) {
+          const entry = history[i];
+          const start = new Date(entry.timestamp);
+          const end = (i + 1 < history.length) ? new Date(history[i + 1].timestamp) : new Date();
+          const diffMs = end - start;
+          const stateKey = entry.state;
+
+          if (taskDurations[stateKey] !== undefined) {
+            taskDurations[stateKey] += diffMs;
+            enteredStates.add(stateKey);
+          }
+        }
+
+        // Add to global totals
+        enteredStates.forEach(s => {
+          stateDurationsSum[s] += taskDurations[s];
+          stateCounts[s]++;
+        });
+      }
+    });
+  });
+
+  const getAverageStateDurationText = (stateKey) => {
+    const totalMs = stateDurationsSum[stateKey];
+    const count = stateCounts[stateKey];
+    if (!count || totalMs <= 0) return '0m';
+
+    const avgMs = totalMs / count;
+    const mins = Math.round(avgMs / 60000);
+    if (mins < 1) return '< 1m';
+    if (mins < 60) return `${mins}m`;
+    const hours = Math.round(mins / 60);
+    if (hours < 24) return `${hours}h`;
+    const days = Math.round(hours / 24);
+    return `${days}d`;
+  };
+
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
       
@@ -330,22 +378,34 @@ export default function Analytics({ sections, stateData = {} }) {
               
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0.5rem', borderRadius: '6px', backgroundColor: 'rgba(255,255,255,0.01)', borderLeft: '4px solid var(--state-completed)' }}>
                 <span style={{ fontSize: '0.85rem' }}>Completed</span>
-                <span style={{ fontWeight: 700, color: 'var(--state-completed)' }}>{completedTasks} ({Math.round(completedTasks/totalTasks*100 || 0)}%)</span>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                  <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>avg: {getAverageStateDurationText('completed')}</span>
+                  <span style={{ fontWeight: 700, color: 'var(--state-completed)' }}>{completedTasks} ({Math.round(completedTasks/totalTasks*100 || 0)}%)</span>
+                </div>
               </div>
 
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0.5rem', borderRadius: '6px', backgroundColor: 'rgba(255,255,255,0.01)', borderLeft: '4px solid var(--state-revising)' }}>
                 <span style={{ fontSize: '0.85rem' }}>Revising</span>
-                <span style={{ fontWeight: 700, color: 'var(--state-revising)' }}>{revisingTasks} ({Math.round(revisingTasks/totalTasks*100 || 0)}%)</span>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                  <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>avg: {getAverageStateDurationText('revising')}</span>
+                  <span style={{ fontWeight: 700, color: 'var(--state-revising)' }}>{revisingTasks} ({Math.round(revisingTasks/totalTasks*100 || 0)}%)</span>
+                </div>
               </div>
 
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0.5rem', borderRadius: '6px', backgroundColor: 'rgba(255,255,255,0.01)', borderLeft: '4px solid var(--state-in-progress)' }}>
                 <span style={{ fontSize: '0.85rem' }}>In Progress</span>
-                <span style={{ fontWeight: 700, color: 'var(--state-in-progress)' }}>{inProgressTasks} ({Math.round(inProgressTasks/totalTasks*100 || 0)}%)</span>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                  <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>avg: {getAverageStateDurationText('in_progress')}</span>
+                  <span style={{ fontWeight: 700, color: 'var(--state-in-progress)' }}>{inProgressTasks} ({Math.round(inProgressTasks/totalTasks*100 || 0)}%)</span>
+                </div>
               </div>
 
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0.5rem', borderRadius: '6px', backgroundColor: 'rgba(255,255,255,0.01)', borderLeft: '4px solid var(--state-backlog)' }}>
                 <span style={{ fontSize: '0.85rem' }}>Backlog</span>
-                <span style={{ fontWeight: 700, color: 'var(--text-secondary)' }}>{backlogTasks} ({Math.round(backlogTasks/totalTasks*100 || 0)}%)</span>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                  <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>avg: {getAverageStateDurationText('backlog')}</span>
+                  <span style={{ fontWeight: 700, color: 'var(--text-secondary)' }}>{backlogTasks} ({Math.round(backlogTasks/totalTasks*100 || 0)}%)</span>
+                </div>
               </div>
 
             </div>

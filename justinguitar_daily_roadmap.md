@@ -984,5 +984,7 @@ This saves 35 days, bringing the new "Bulletproof" total down to **540 days**, w
 
 ### 📅 Day 1 - 50 Min Practical
 - **Status**: COMPLETED
+- **Start Date**: 2026-07-09
 - **End Date**: 2026-07-10
-- **Worked Dates**: 2026-07-10
+- **Notes**:
+  hi

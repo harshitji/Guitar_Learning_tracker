@@ -51,13 +51,15 @@ export default function App() {
         images: [],
         startDate: '',
         endDate: '',
-        workedDates: []
+        workedDates: [],
+        stateHistory: []
       };
     } else {
       // Ensure properties exist on old structures
       if (draft[day][idxKey].startDate === undefined) draft[day][idxKey].startDate = '';
       if (draft[day][idxKey].endDate === undefined) draft[day][idxKey].endDate = '';
       if (draft[day][idxKey].workedDates === undefined) draft[day][idxKey].workedDates = [];
+      if (draft[day][idxKey].stateHistory === undefined) draft[day][idxKey].stateHistory = [];
     }
     return draft[day][idxKey];
   };
@@ -66,7 +68,27 @@ export default function App() {
   const handleActivityChange = (day, actIdx, state) => {
     const draft = cloneStateData();
     const act = ensureActivityExists(draft, day, actIdx);
-    act.state = state;
+    const oldState = act.state || 'backlog';
+    
+    if (oldState !== state) {
+      const nowISO = new Date().toISOString();
+      if (!act.stateHistory) act.stateHistory = [];
+      
+      // If history is empty, record initial state starting 1 min ago so we have a duration
+      if (act.stateHistory.length === 0) {
+        const oneMinAgo = new Date(Date.now() - 60000).toISOString();
+        act.stateHistory.push({
+          state: oldState,
+          timestamp: oneMinAgo
+        });
+      }
+      
+      act.state = state;
+      act.stateHistory.push({
+        state,
+        timestamp: nowISO
+      });
+    }
 
     // Smart helper: if moving to in_progress/revising and no startDate is set, auto-set to today
     const todayStr = new Date().toISOString().split('T')[0];

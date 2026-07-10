@@ -292,6 +292,39 @@ function saveRoadmap(markdownPath, stateJSONPath, stateData) {
         if (act.workedDates && act.workedDates.length > 0) {
           notesLines.push(`- **Worked Dates**: ${act.workedDates.join(', ')}`);
         }
+        if (act.stateHistory && act.stateHistory.length > 0) {
+          const durations = { backlog: 0, in_progress: 0, revising: 0, completed: 0 };
+          for (let i = 0; i < act.stateHistory.length; i++) {
+            const entry = act.stateHistory[i];
+            const start = new Date(entry.timestamp);
+            const end = (i + 1 < act.stateHistory.length) ? new Date(act.stateHistory[i + 1].timestamp) : new Date();
+            const diffMs = end - start;
+            if (durations[entry.state] !== undefined) {
+              durations[entry.state] += diffMs;
+            }
+          }
+          const formatDuration = (ms) => {
+            if (ms <= 0) return null;
+            const mins = Math.round(ms / 60000);
+            if (mins < 1) return '< 1m';
+            if (mins < 60) return `${mins}m`;
+            const hours = Math.round(mins / 60);
+            if (hours < 24) return `${hours}h`;
+            const days = Math.round(hours / 24);
+            return `${days}d`;
+          };
+          const parts = Object.entries(durations)
+            .map(([s, ms]) => {
+              const readable = formatDuration(ms);
+              if (!readable) return null;
+              const labels = { backlog: 'Todo', in_progress: 'WIP', revising: 'Rev', completed: 'Done' };
+              return `${labels[s]}: ${readable}`;
+            })
+            .filter(Boolean);
+          if (parts.length > 0) {
+            notesLines.push(`- **Time in States**: ${parts.join(' • ')}`);
+          }
+        }
 
         if (hasNotesText) {
           notesLines.push(`- **Notes**:`);
