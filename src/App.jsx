@@ -229,6 +229,13 @@ export default function App() {
     setStateData(draft);
   };
 
+  const handleResetStateHistory = (day, actIdx) => {
+    const draft = cloneStateData();
+    const act = ensureActivityExists(draft, day, actIdx);
+    act.stateHistory = [];
+    setStateData(draft);
+  };
+
   // Trigger POST Save to Backend API
   const handleSave = async () => {
     setIsSaving(true);
@@ -549,6 +556,7 @@ export default function App() {
             onRemoveWorkedDate={handleRemoveWorkedDate}
             onToggleTag={handleToggleTag}
             onAddCustomTag={handleAddCustomTag}
+            onResetStateHistory={handleResetStateHistory}
           />
         ) : activeTab === 'analytics' ? (
           <Analytics sections={sections} stateData={stateData} />

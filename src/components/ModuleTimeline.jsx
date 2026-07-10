@@ -113,7 +113,8 @@ export default function ModuleTimeline({
   onLogWorkedDate,
   onRemoveWorkedDate,
   onToggleTag,
-  onAddCustomTag
+  onAddCustomTag,
+  onResetStateHistory
 }) {
   const [expandedNotes, setExpandedNotes] = useState({});
   const [checklistInputs, setChecklistInputs] = useState({});
@@ -228,9 +229,10 @@ export default function ModuleTimeline({
     };
     const parts = Object.entries(durations)
       .map(([s, ms]) => {
+        if (s === 'backlog') return null; // backlog/todo time is not meaningful
         const readable = formatDuration(ms);
         if (!readable) return null;
-        const labels = { backlog: 'Todo', in_progress: 'WIP', revising: 'Rev', completed: 'Done' };
+        const labels = { in_progress: 'WIP', revising: 'Rev', completed: 'Done' };
         return `${labels[s]}: ${readable}`;
       })
       .filter(Boolean);
@@ -574,9 +576,33 @@ export default function ModuleTimeline({
                               <div style={{
                                 fontSize: '0.72rem', color: 'var(--text-secondary)',
                                 background: 'rgba(255,255,255,0.01)', border: '1px dashed rgba(255,255,255,0.05)',
-                                padding: '0.4rem 0.6rem', borderRadius: '6px', marginTop: '0.25rem'
+                                padding: '0.4rem 0.6rem', borderRadius: '6px', marginTop: '0.25rem',
+                                display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '0.5rem'
                               }}>
-                                <span style={{ fontWeight: 700, color: cfg.color }}>Time in states:</span> {getStateDurationBreakdown(task.stateHistory)}
+                                <span>
+                                  <span style={{ fontWeight: 700, color: cfg.color }}>Time in states:</span>{' '}
+                                  {getStateDurationBreakdown(task.stateHistory)}
+                                </span>
+                                <button
+                                  type="button"
+                                  title="Reset time tracking for this item"
+                                  onClick={() => {
+                                    if (window.confirm('Reset time-in-states tracking for this item? This cannot be undone.')) {
+                                      onResetStateHistory(dayObj.day, actIdx);
+                                    }
+                                  }}
+                                  style={{
+                                    border: '1px solid rgba(239,68,68,0.35)', borderRadius: '5px',
+                                    background: 'rgba(239,68,68,0.07)', color: '#ef4444',
+                                    fontSize: '0.65rem', fontWeight: 700, cursor: 'pointer',
+                                    padding: '0.15rem 0.45rem', flexShrink: 0,
+                                    transition: 'all 0.2s ease'
+                                  }}
+                                  onMouseEnter={e => e.currentTarget.style.background = 'rgba(239,68,68,0.18)'}
+                                  onMouseLeave={e => e.currentTarget.style.background = 'rgba(239,68,68,0.07)'}
+                                >
+                                  ↺ Reset
+                                </button>
                               </div>
                             )}
 

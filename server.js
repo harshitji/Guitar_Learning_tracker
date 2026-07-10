@@ -318,9 +318,10 @@ function saveRoadmap(markdownPath, stateJSONPath, stateData) {
           };
           const parts = Object.entries(durations)
             .map(([s, ms]) => {
+              if (s === 'backlog') return null; // backlog/todo time is not meaningful
               const readable = formatDuration(ms);
               if (!readable) return null;
-              const labels = { backlog: 'Todo', in_progress: 'WIP', revising: 'Rev', completed: 'Done' };
+              const labels = { in_progress: 'WIP', revising: 'Rev', completed: 'Done' };
               return `${labels[s]}: ${readable}`;
             })
             .filter(Boolean);
