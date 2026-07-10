@@ -48,8 +48,16 @@ export default function App() {
         state: 'backlog',
         notes: '',
         checklist: [],
-        images: []
+        images: [],
+        startDate: '',
+        endDate: '',
+        workedDates: []
       };
+    } else {
+      // Ensure properties exist on old structures
+      if (draft[day][idxKey].startDate === undefined) draft[day][idxKey].startDate = '';
+      if (draft[day][idxKey].endDate === undefined) draft[day][idxKey].endDate = '';
+      if (draft[day][idxKey].workedDates === undefined) draft[day][idxKey].workedDates = [];
     }
     return draft[day][idxKey];
   };
@@ -59,6 +67,21 @@ export default function App() {
     const draft = cloneStateData();
     const act = ensureActivityExists(draft, day, actIdx);
     act.state = state;
+
+    // Smart helper: if moving to in_progress/revising and no startDate is set, auto-set to today
+    const todayStr = new Date().toISOString().split('T')[0];
+    if ((state === 'in_progress' || state === 'revising') && !act.startDate) {
+      act.startDate = todayStr;
+    }
+    // Smart helper: if moving to completed and no endDate is set, auto-set to today
+    if (state === 'completed' && !act.endDate) {
+      act.endDate = todayStr;
+    }
+    // Auto-log today's date if not already in workedDates
+    if (state !== 'backlog' && !act.workedDates.includes(todayStr)) {
+      act.workedDates.push(todayStr);
+    }
+
     setStateData(draft);
   };
 
@@ -112,6 +135,42 @@ export default function App() {
     const act = ensureActivityExists(draft, day, actIdx);
     if (act.images) {
       act.images.splice(imgIdx, 1);
+    }
+    setStateData(draft);
+  };
+
+  const handleStartDateChange = (day, actIdx, dateStr) => {
+    const draft = cloneStateData();
+    const act = ensureActivityExists(draft, day, actIdx);
+    act.startDate = dateStr;
+    setStateData(draft);
+  };
+
+  const handleEndDateChange = (day, actIdx, dateStr) => {
+    const draft = cloneStateData();
+    const act = ensureActivityExists(draft, day, actIdx);
+    act.endDate = dateStr;
+    setStateData(draft);
+  };
+
+  const handleLogWorkedDate = (day, actIdx, dateStr) => {
+    if (!dateStr) return;
+    const draft = cloneStateData();
+    const act = ensureActivityExists(draft, day, actIdx);
+    if (!act.workedDates) act.workedDates = [];
+    if (!act.workedDates.includes(dateStr)) {
+      act.workedDates.push(dateStr);
+      // Sort workedDates chronologically
+      act.workedDates.sort();
+    }
+    setStateData(draft);
+  };
+
+  const handleRemoveWorkedDate = (day, actIdx, dateIdx) => {
+    const draft = cloneStateData();
+    const act = ensureActivityExists(draft, day, actIdx);
+    if (act.workedDates) {
+      act.workedDates.splice(dateIdx, 1);
     }
     setStateData(draft);
   };
@@ -421,6 +480,10 @@ export default function App() {
             onImageUpload={handleImageUpload}
             onImageRemove={handleImageRemove}
             openLightbox={setLightboxUrl}
+            onStartDateChange={handleStartDateChange}
+            onEndDateChange={handleEndDateChange}
+            onLogWorkedDate={handleLogWorkedDate}
+            onRemoveWorkedDate={handleRemoveWorkedDate}
           />
         ) : (
           <Analytics sections={sections} stateData={stateData} />

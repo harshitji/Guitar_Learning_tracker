@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ChevronDown, ChevronUp, Plus, Trash2, Camera, ExternalLink, FileText, Circle, CheckCircle2, Clock, RotateCcw, Archive } from 'lucide-react';
+import { ChevronDown, ChevronUp, Plus, Trash2, Camera, ExternalLink, FileText, Circle, CheckCircle2, Clock, RotateCcw, Archive, Calendar } from 'lucide-react';
 
 // State configuration - colors, labels, icons, gradients
 const STATE_CONFIG = {
@@ -107,10 +107,15 @@ export default function ModuleTimeline({
   onDeleteChecklistItem,
   onImageUpload,
   onImageRemove,
-  openLightbox
+  openLightbox,
+  onStartDateChange,
+  onEndDateChange,
+  onLogWorkedDate,
+  onRemoveWorkedDate
 }) {
   const [expandedNotes, setExpandedNotes] = useState({});
   const [checklistInputs, setChecklistInputs] = useState({});
+  const [manualDates, setManualDates] = useState({});
 
   if (!section) {
     return (
@@ -476,6 +481,130 @@ export default function ModuleTimeline({
                               onChange={(e) => onNotesChange(dayObj.day, actIdx, e.target.value)}
                               style={{ borderColor: task.notes ? cfg.border : 'var(--border-color)' }}
                             />
+                          </div>
+
+                          {/* Date Logs Section */}
+                          <div style={{
+                            display: 'flex', flexDirection: 'column', gap: '0.75rem',
+                            padding: '0.75rem', borderRadius: '8px',
+                            backgroundColor: 'rgba(255,255,255,0.02)',
+                            border: `1px solid ${cfg.border}`,
+                            marginTop: '0.75rem'
+                          }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', color: cfg.color, fontWeight: 700, fontSize: '0.8rem' }}>
+                              <Calendar size={14} />
+                              <span>Practice Schedule & Logs</span>
+                            </div>
+
+                            {/* Start / End Dates inputs */}
+                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem' }}>
+                              <div>
+                                <label style={{ fontSize: '0.7rem', color: 'var(--text-muted)', display: 'block', marginBottom: '0.2rem' }}>Start Date</label>
+                                <input
+                                  type="date"
+                                  value={task.startDate || ''}
+                                  onChange={(e) => onStartDateChange(dayObj.day, actIdx, e.target.value)}
+                                  style={{
+                                    width: '100%', backgroundColor: 'rgba(0,0,0,0.3)',
+                                    border: `1px solid ${cfg.border}`, color: 'var(--text-primary)',
+                                    padding: '0.35rem 0.5rem', borderRadius: '6px', fontSize: '0.75rem'
+                                  }}
+                                />
+                              </div>
+                              <div>
+                                <label style={{ fontSize: '0.7rem', color: 'var(--text-muted)', display: 'block', marginBottom: '0.2rem' }}>End Date</label>
+                                <input
+                                  type="date"
+                                  value={task.endDate || ''}
+                                  onChange={(e) => onEndDateChange(dayObj.day, actIdx, e.target.value)}
+                                  style={{
+                                    width: '100%', backgroundColor: 'rgba(0,0,0,0.3)',
+                                    border: `1px solid ${cfg.border}`, color: 'var(--text-primary)',
+                                    padding: '0.35rem 0.5rem', borderRadius: '6px', fontSize: '0.75rem'
+                                  }}
+                                />
+                              </div>
+                            </div>
+
+                            {/* Worked Days Log list */}
+                            <div style={{ marginTop: '0.25rem' }}>
+                              <span style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-secondary)' }}>Worked Days Logs</span>
+                              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.35rem', margin: '0.4rem 0' }}>
+                                {task.workedDates && task.workedDates.map((wDate, wIdx) => (
+                                  <span key={wIdx} style={{
+                                    display: 'inline-flex', alignItems: 'center', gap: '0.25rem',
+                                    fontSize: '0.7rem', backgroundColor: cfg.bg, color: cfg.color,
+                                    border: `1px solid ${cfg.border}`, padding: '0.15rem 0.4rem',
+                                    borderRadius: '4px', fontWeight: 600
+                                  }}>
+                                    {wDate}
+                                    <button
+                                      type="button"
+                                      onClick={() => onRemoveWorkedDate(dayObj.day, actIdx, wIdx)}
+                                      style={{
+                                        border: 'none', background: 'none', color: cfg.color,
+                                        fontSize: '0.8rem', cursor: 'pointer', padding: '0 0.1rem',
+                                        fontWeight: 'bold', display: 'inline-flex', alignItems: 'center'
+                                      }}
+                                    >
+                                      ×
+                                    </button>
+                                  </span>
+                                ))}
+                                {(!task.workedDates || task.workedDates.length === 0) && (
+                                  <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)', fontStyle: 'italic' }}>No practice days logged yet.</span>
+                                )}
+                              </div>
+
+                              {/* Log Day Selector row */}
+                              <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center', marginTop: '0.5rem' }}>
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    const todayStr = new Date().toISOString().split('T')[0];
+                                    onLogWorkedDate(dayObj.day, actIdx, todayStr);
+                                  }}
+                                  style={{
+                                    backgroundColor: cfg.bg, border: `1px solid ${cfg.border}`,
+                                    color: cfg.color, padding: '0.35rem 0.6rem', borderRadius: '6px',
+                                    fontSize: '0.72rem', fontWeight: 700, cursor: 'pointer',
+                                    display: 'flex', alignItems: 'center', gap: '0.25rem',
+                                    transition: 'all 0.2s ease'
+                                  }}
+                                >
+                                  + Log Today
+                                </button>
+
+                                <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>or</span>
+
+                                <input
+                                  type="date"
+                                  value={manualDates[actKey] || ''}
+                                  onChange={(e) => setManualDates(prev => ({ ...prev, [actKey]: e.target.value }))}
+                                  style={{
+                                    backgroundColor: 'rgba(0,0,0,0.3)', border: `1px solid ${cfg.border}`,
+                                    color: 'var(--text-primary)', padding: '0.3rem 0.4rem', borderRadius: '6px',
+                                    fontSize: '0.7rem'
+                                  }}
+                                />
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    if (manualDates[actKey]) {
+                                      onLogWorkedDate(dayObj.day, actIdx, manualDates[actKey]);
+                                      setManualDates(prev => ({ ...prev, [actKey]: '' }));
+                                    }
+                                  }}
+                                  style={{
+                                    backgroundColor: 'rgba(255,255,255,0.05)', border: '1px solid var(--border-color)',
+                                    color: 'var(--text-secondary)', padding: '0.3rem 0.5rem', borderRadius: '6px',
+                                    fontSize: '0.7rem', cursor: 'pointer'
+                                  }}
+                                >
+                                  Add Date
+                                </button>
+                              </div>
+                            </div>
                           </div>
 
                           {/* Image attachments */}

@@ -275,13 +275,24 @@ function saveRoadmap(markdownPath, stateJSONPath, stateData) {
       const hasNotesText = act.notes && act.notes.trim();
       const hasChecklist = act.checklist && act.checklist.length > 0;
       const hasImages = act.images && act.images.length > 0;
+      const hasDates = act.startDate || act.endDate || (act.workedDates && act.workedDates.length > 0);
 
-      if (hasNotesText || hasChecklist || hasImages) {
+      if (hasNotesText || hasChecklist || hasImages || hasDates) {
         hasNotes = true;
         const actTitle = actIdx === '0' ? '50 Min Practical' : '40 Min Theory/Exercises';
         notesLines.push(`### 📅 ${day} - ${actTitle}`);
         notesLines.push(`- **Status**: ${act.state.toUpperCase()}`);
         
+        if (act.startDate) {
+          notesLines.push(`- **Start Date**: ${act.startDate}`);
+        }
+        if (act.endDate) {
+          notesLines.push(`- **End Date**: ${act.endDate}`);
+        }
+        if (act.workedDates && act.workedDates.length > 0) {
+          notesLines.push(`- **Worked Dates**: ${act.workedDates.join(', ')}`);
+        }
+
         if (hasNotesText) {
           notesLines.push(`- **Notes**:`);
           notesLines.push(act.notes.split('\n').map(line => `  ${line}`).join('\n'));
