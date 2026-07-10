@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ChevronDown, ChevronUp, Plus, Trash2, Camera, ExternalLink, FileText, Circle, CheckCircle2, Clock, RotateCcw, Archive, Calendar } from 'lucide-react';
 
 // State configuration - colors, labels, icons, gradients
@@ -120,6 +120,13 @@ export default function ModuleTimeline({
   const [checklistInputs, setChecklistInputs] = useState({});
   const [manualDates, setManualDates] = useState({});
   const [tagInputs, setTagInputs] = useState({});
+  const [, setTick] = useState(0); // force re-render for live time-in-states
+
+  // Tick every 60s so time-in-states durations stay current
+  useEffect(() => {
+    const timer = setInterval(() => setTick(t => t + 1), 60000);
+    return () => clearInterval(timer);
+  }, []);
 
   if (!section) {
     return (

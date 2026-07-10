@@ -273,9 +273,9 @@ export default function App() {
     window.close();
   };
 
-  // Auto-save using sendBeacon when the tab is hidden or closed
+  // Auto-save: periodic interval (30s) + on tab hide + on beforeunload
   useEffect(() => {
-    const autoSave = () => {
+    const sendSave = () => {
       if (!stateData || Object.keys(stateData).length === 0) return;
       const blob = new Blob(
         [JSON.stringify({ stateData })],
@@ -284,15 +284,31 @@ export default function App() {
       navigator.sendBeacon('http://localhost:3001/api/autosave', blob);
     };
 
+    const periodicSave = async () => {
+      if (!stateData || Object.keys(stateData).length === 0) return;
+      try {
+        await fetch('http://localhost:3001/api/save', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ stateData })
+        });
+        setSaveStatus('auto-saved');
+        setTimeout(() => setSaveStatus(''), 2000);
+      } catch (_) { /* silent */ }
+    };
+
+    const interval = setInterval(periodicSave, 30000); // every 30 seconds
+
     const onVisibilityChange = () => {
-      if (document.visibilityState === 'hidden') autoSave();
+      if (document.visibilityState === 'hidden') sendSave();
     };
 
     document.addEventListener('visibilitychange', onVisibilityChange);
-    window.addEventListener('beforeunload', autoSave);
+    window.addEventListener('beforeunload', sendSave);
     return () => {
+      clearInterval(interval);
       document.removeEventListener('visibilitychange', onVisibilityChange);
-      window.removeEventListener('beforeunload', autoSave);
+      window.removeEventListener('beforeunload', sendSave);
     };
   }, [stateData]);
 
@@ -505,8 +521,13 @@ export default function App() {
                   <CheckCircle size={12} /> Synced to Markdown!
                 </span>
               )}
+              {saveStatus === 'auto-saved' && (
+                <span style={{ fontSize: '0.75rem', color: 'var(--accent-cyan)', display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
+                  <CheckCircle size={12} /> Auto-saved
+                </span>
+              )}
               {saveStatus === 'error' && <span style={{ fontSize: '0.75rem', color: '#ef4444' }}>❌ Sync failed — check server</span>}
-              {!saveStatus && <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>Auto-saves on close • Syncs .md file</span>}
+              {!saveStatus && <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>Auto-saves every 30s • Syncs .md file</span>}
             </div>
 
             {/* Circular Progress Ring */}
