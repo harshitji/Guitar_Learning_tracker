@@ -1,13 +1,35 @@
 {
   "Day 1": {
     "0": {
-      "state": "completed",
-      "notes": "hi",
+      "state": "backlog",
+      "notes": "",
       "checklist": [],
       "images": [],
-      "startDate": "2026-07-09",
+      "startDate": "2026-07-10",
       "endDate": "2026-07-10",
-      "workedDates": []
+      "workedDates": [],
+      "stateHistory": [
+        {
+          "state": "backlog",
+          "timestamp": "2026-07-10T12:15:27.190Z"
+        },
+        {
+          "state": "in_progress",
+          "timestamp": "2026-07-10T12:16:27.190Z"
+        },
+        {
+          "state": "completed",
+          "timestamp": "2026-07-10T12:16:32.855Z"
+        },
+        {
+          "state": "backlog",
+          "timestamp": "2026-07-10T12:17:13.355Z"
+        }
+      ],
+      "tags": [
+        "revisit",
+        "good lesson"
+      ]
     }
   }
 }

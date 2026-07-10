@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { BarChart3, LayoutGrid, CheckCircle, Save, PowerOff } from 'lucide-react';
+import { BarChart3, LayoutGrid, CheckCircle, Save, PowerOff, Tag } from 'lucide-react';
 import ModuleTimeline from './components/ModuleTimeline';
 import Analytics from './components/Analytics';
+import TagsExplorer from './components/TagsExplorer';
 
 export default function App() {
   const [sections, setSections] = useState([]);
@@ -52,7 +53,8 @@ export default function App() {
         startDate: '',
         endDate: '',
         workedDates: [],
-        stateHistory: []
+        stateHistory: [],
+        tags: []
       };
     } else {
       // Ensure properties exist on old structures
@@ -60,6 +62,7 @@ export default function App() {
       if (draft[day][idxKey].endDate === undefined) draft[day][idxKey].endDate = '';
       if (draft[day][idxKey].workedDates === undefined) draft[day][idxKey].workedDates = [];
       if (draft[day][idxKey].stateHistory === undefined) draft[day][idxKey].stateHistory = [];
+      if (draft[day][idxKey].tags === undefined) draft[day][idxKey].tags = [];
     }
     return draft[day][idxKey];
   };
@@ -193,6 +196,35 @@ export default function App() {
     const act = ensureActivityExists(draft, day, actIdx);
     if (act.workedDates) {
       act.workedDates.splice(dateIdx, 1);
+    }
+    setStateData(draft);
+  };
+
+  const handleToggleTag = (day, actIdx, tag) => {
+    if (!tag) return;
+    const cleanTag = tag.trim().toLowerCase();
+    if (!cleanTag) return;
+    const draft = cloneStateData();
+    const act = ensureActivityExists(draft, day, actIdx);
+    if (!act.tags) act.tags = [];
+    const idx = act.tags.indexOf(cleanTag);
+    if (idx !== -1) {
+      act.tags.splice(idx, 1); // remove
+    } else {
+      act.tags.push(cleanTag); // add
+    }
+    setStateData(draft);
+  };
+
+  const handleAddCustomTag = (day, actIdx, tag) => {
+    if (!tag) return;
+    const cleanTag = tag.trim().toLowerCase();
+    if (!cleanTag) return;
+    const draft = cloneStateData();
+    const act = ensureActivityExists(draft, day, actIdx);
+    if (!act.tags) act.tags = [];
+    if (!act.tags.includes(cleanTag)) {
+      act.tags.push(cleanTag);
     }
     setStateData(draft);
   };
@@ -362,6 +394,15 @@ export default function App() {
                 <span>Progress Analytics</span>
               </div>
             </li>
+            <li 
+              className={`sidebar-item ${activeTab === 'tags' ? 'active' : ''}`}
+              onClick={() => setActiveTab('tags')}
+            >
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                <Tag size={16} />
+                <span>Tags Explorer</span>
+              </div>
+            </li>
           </ul>
 
           <div className="sidebar-heading">Grade Modules</div>
@@ -506,9 +547,20 @@ export default function App() {
             onEndDateChange={handleEndDateChange}
             onLogWorkedDate={handleLogWorkedDate}
             onRemoveWorkedDate={handleRemoveWorkedDate}
+            onToggleTag={handleToggleTag}
+            onAddCustomTag={handleAddCustomTag}
           />
-        ) : (
+        ) : activeTab === 'analytics' ? (
           <Analytics sections={sections} stateData={stateData} />
+        ) : (
+          <TagsExplorer
+            sections={sections}
+            stateData={stateData}
+            onNavigateToTask={(secIdx) => {
+              setSelectedSectionIdx(secIdx);
+              setActiveTab('timeline');
+            }}
+          />
         )}
       </main>
 

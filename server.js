@@ -292,6 +292,9 @@ function saveRoadmap(markdownPath, stateJSONPath, stateData) {
         if (act.workedDates && act.workedDates.length > 0) {
           notesLines.push(`- **Worked Dates**: ${act.workedDates.join(', ')}`);
         }
+        if (act.tags && act.tags.length > 0) {
+          notesLines.push(`- **Tags**: ${act.tags.join(', ')}`);
+        }
         if (act.stateHistory && act.stateHistory.length > 0) {
           const durations = { backlog: 0, in_progress: 0, revising: 0, completed: 0 };
           for (let i = 0; i < act.stateHistory.length; i++) {

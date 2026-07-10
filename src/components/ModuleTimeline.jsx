@@ -111,11 +111,14 @@ export default function ModuleTimeline({
   onStartDateChange,
   onEndDateChange,
   onLogWorkedDate,
-  onRemoveWorkedDate
+  onRemoveWorkedDate,
+  onToggleTag,
+  onAddCustomTag
 }) {
   const [expandedNotes, setExpandedNotes] = useState({});
   const [checklistInputs, setChecklistInputs] = useState({});
   const [manualDates, setManualDates] = useState({});
+  const [tagInputs, setTagInputs] = useState({});
 
   if (!section) {
     return (
@@ -196,7 +199,8 @@ export default function ModuleTimeline({
       startDate: stored?.startDate ?? '',
       endDate:   stored?.endDate   ?? '',
       workedDates: stored?.workedDates ?? [],
-      stateHistory: stored?.stateHistory ?? []
+      stateHistory: stored?.stateHistory ?? [],
+      tags:         stored?.tags         ?? []
     };
   };
   const getStateDurationBreakdown = (history = []) => {
@@ -654,6 +658,104 @@ export default function ModuleTimeline({
                                   Add Date
                                 </button>
                               </div>
+                            </div>
+                          </div>
+
+                          {/* Session Tags Section */}
+                          <div style={{
+                            display: 'flex', flexDirection: 'column', gap: '0.5rem',
+                            padding: '0.75rem', borderRadius: '8px',
+                            backgroundColor: 'rgba(255,255,255,0.02)',
+                            border: `1px solid ${cfg.border}`,
+                            marginTop: '0.75rem'
+                          }}>
+                            <span style={{ fontSize: '0.75rem', fontWeight: 700, color: cfg.color }}>Session Tags</span>
+                            
+                            {/* Quick toggle tags list */}
+                            <div style={{ display: 'flex', gap: '0.4rem', flexWrap: 'wrap', marginBottom: '0.25rem' }}>
+                              {['revisit', 'good lesson', 'needs more work'].map(t => {
+                                const active = task.tags && task.tags.includes(t);
+                                return (
+                                  <button
+                                    key={t}
+                                    type="button"
+                                    onClick={() => onToggleTag(dayObj.day, actIdx, t)}
+                                    style={{
+                                      border: 'none', borderRadius: '6px', cursor: 'pointer',
+                                      padding: '0.25rem 0.5rem', fontSize: '0.7rem', fontWeight: 600,
+                                      transition: 'all 0.2s ease',
+                                      background: active ? cfg.color : 'rgba(255,255,255,0.04)',
+                                      color: active ? '#000' : 'var(--text-secondary)'
+                                    }}
+                                  >
+                                    {t === 'revisit' ? '🔄 Revisit' : t === 'good lesson' ? '🏆 Good Lesson' : '🛠️ Needs Work'}
+                                  </button>
+                                );
+                              })}
+                            </div>
+
+                            {/* Active Custom Tags list */}
+                            {task.tags && task.tags.filter(t => !['revisit', 'good lesson', 'needs more work'].includes(t)).length > 0 && (
+                              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.35rem', margin: '0.2rem 0' }}>
+                                {task.tags.filter(t => !['revisit', 'good lesson', 'needs more work'].includes(t)).map((t, tIdx) => (
+                                  <span key={tIdx} style={{
+                                    display: 'inline-flex', alignItems: 'center', gap: '0.25rem',
+                                    fontSize: '0.7rem', backgroundColor: 'rgba(255,255,255,0.04)',
+                                    color: 'var(--text-primary)', border: '1px solid var(--border-color)',
+                                    padding: '0.15rem 0.4rem', borderRadius: '4px', fontWeight: 600
+                                  }}>
+                                    🏷️ {t}
+                                    <button
+                                      type="button"
+                                      onClick={() => onToggleTag(dayObj.day, actIdx, t)}
+                                      style={{
+                                        border: 'none', background: 'none', color: 'var(--text-muted)',
+                                        fontSize: '0.8rem', cursor: 'pointer', padding: '0 0.1rem',
+                                        fontWeight: 'bold', display: 'inline-flex', alignItems: 'center'
+                                      }}
+                                    >
+                                      ×
+                                    </button>
+                                  </span>
+                                ))}
+                              </div>
+                            )}
+
+                            {/* Add Custom Tag row */}
+                            <div style={{ display: 'flex', gap: '0.35rem', marginTop: '0.25rem' }}>
+                              <input
+                                type="text"
+                                placeholder="Add custom tag (e.g. legato, rhythm)..."
+                                value={tagInputs[actKey] || ''}
+                                onChange={(e) => setTagInputs(prev => ({ ...prev, [actKey]: e.target.value }))}
+                                onKeyDown={(e) => {
+                                  if (e.key === 'Enter' && tagInputs[actKey]?.trim()) {
+                                    onAddCustomTag(dayObj.day, actIdx, tagInputs[actKey]);
+                                    setTagInputs(prev => ({ ...prev, [actKey]: '' }));
+                                  }
+                                }}
+                                style={{
+                                  flex: 1, backgroundColor: 'rgba(0,0,0,0.3)',
+                                  border: `1px solid ${cfg.border}`, color: 'var(--text-primary)',
+                                  padding: '0.3rem 0.5rem', borderRadius: '6px', fontSize: '0.7rem'
+                                }}
+                              />
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  if (tagInputs[actKey]?.trim()) {
+                                    onAddCustomTag(dayObj.day, actIdx, tagInputs[actKey]);
+                                    setTagInputs(prev => ({ ...prev, [actKey]: '' }));
+                                  }
+                                }}
+                                style={{
+                                  backgroundColor: cfg.bg, border: `1px solid ${cfg.border}`,
+                                  color: cfg.color, padding: '0.3rem 0.6rem', borderRadius: '6px',
+                                  fontSize: '0.7rem', fontWeight: 600, cursor: 'pointer'
+                                }}
+                              >
+                                + Tag
+                              </button>
                             </div>
                           </div>
 
