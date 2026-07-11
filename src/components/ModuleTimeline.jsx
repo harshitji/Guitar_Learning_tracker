@@ -97,6 +97,33 @@ function DayProgressBar({ tasks }) {
   );
 }
 
+// A simple markdown parser for `**bold**` and `[link](url)` inline text
+function RichText({ text }) {
+  if (!text) return null;
+  const regex = /(\[.*?\]\(.*?\)|\*\*.*?\*\*)/g;
+  const parts = text.split(regex);
+  return (
+    <>
+      {parts.map((part, i) => {
+        if (!part) return null;
+        const linkMatch = part.match(/^\[(.*?)\]\((.*?)\)$/);
+        if (linkMatch) {
+          return (
+            <a key={i} href={linkMatch[2]} target="_blank" rel="noreferrer" style={{ color: 'var(--accent-cyan)', textDecoration: 'none', fontWeight: '500' }}>
+              {linkMatch[1]}
+            </a>
+          );
+        }
+        const boldMatch = part.match(/^\*\*(.*?)\*\*$/);
+        if (boldMatch) {
+          return <strong key={i} style={{ color: 'var(--text-primary)' }}>{boldMatch[1]}</strong>;
+        }
+        return <span key={i}>{part}</span>;
+      })}
+    </>
+  );
+}
+
 export default function ModuleTimeline({
   section,
   stateData = {},
@@ -399,7 +426,7 @@ export default function ModuleTimeline({
                         transition: 'all 0.3s ease',
                       }}
                     >
-                      {task.content}
+                      <RichText text={task.content} />
                     </div>
 
                     {/* Checklist quick summary strip */}
