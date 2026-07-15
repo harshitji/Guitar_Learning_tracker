@@ -1,29 +1,390 @@
 {
   "Day 1": {
     "0": {
-      "state": "revising",
+      "state": "completed",
       "notes": "",
       "checklist": [],
       "images": [],
       "startDate": "2026-07-10",
       "endDate": "2026-07-10",
       "workedDates": [
-        "2026-07-10"
+        "2026-07-10",
+        "2026-07-11"
       ],
       "stateHistory": [
         {
-          "state": "revising",
-          "timestamp": "2026-07-10T14:05:47.020Z"
+          "state": "backlog",
+          "timestamp": "2026-07-11T06:18:56.986Z"
+        },
+        {
+          "state": "in_progress",
+          "timestamp": "2026-07-11T06:19:56.986Z"
+        },
+        {
+          "state": "completed",
+          "timestamp": "2026-07-11T06:34:52.679Z"
+        }
+      ],
+      "tags": []
+    },
+    "1": {
+      "state": "completed",
+      "notes": "",
+      "checklist": [],
+      "images": [],
+      "startDate": "2026-07-10",
+      "endDate": "2026-07-10",
+      "workedDates": [
+        "2026-07-10",
+        "2026-07-11"
+      ],
+      "stateHistory": [
+        {
+          "state": "completed",
+          "timestamp": "2026-07-10T14:25:06.283Z"
         },
         {
           "state": "backlog",
-          "timestamp": "2026-07-10T14:06:47.020Z"
+          "timestamp": "2026-07-10T14:26:06.283Z"
         },
         {
-          "state": "revising",
-          "timestamp": "2026-07-10T14:06:49.436Z"
+          "state": "in_progress",
+          "timestamp": "2026-07-11T15:04:24.494Z"
+        },
+        {
+          "state": "completed",
+          "timestamp": "2026-07-11T15:22:24.822Z"
         }
       ],
+      "tags": [
+        "revisit"
+      ]
+    }
+  },
+  "Day 3": {
+    "0": {
+      "state": "completed",
+      "notes": "",
+      "checklist": [
+        {
+          "id": "1783753327811",
+          "text": "spider exercise all types 60 bpm",
+          "done": true
+        },
+        {
+          "id": "1783753399274",
+          "text": "pink finger and similar all finger 60 bpm",
+          "done": true
+        },
+        {
+          "id": "1783753467007",
+          "text": "1 min chord changes em, a, d, g, c, f",
+          "done": true
+        },
+        {
+          "id": "1783753531241",
+          "text": "down strum chord changes",
+          "done": true
+        }
+      ],
+      "images": [],
+      "startDate": "2026-07-10",
+      "endDate": "2026-07-13",
+      "workedDates": [
+        "2026-07-10",
+        "2026-07-13"
+      ],
+      "stateHistory": [
+        {
+          "state": "backlog",
+          "timestamp": "2026-07-13T14:33:32.420Z"
+        },
+        {
+          "state": "in_progress",
+          "timestamp": "2026-07-13T14:34:32.420Z"
+        },
+        {
+          "state": "completed",
+          "timestamp": "2026-07-13T15:29:09.469Z"
+        }
+      ],
+      "tags": []
+    }
+  },
+  "Day 2": {
+    "0": {
+      "state": "completed",
+      "notes": "",
+      "checklist": [],
+      "images": [],
+      "startDate": "2026-07-11",
+      "endDate": "2026-07-11",
+      "workedDates": [
+        "2026-07-11"
+      ],
+      "stateHistory": [
+        {
+          "state": "backlog",
+          "timestamp": "2026-07-11T06:34:13.525Z"
+        },
+        {
+          "state": "in_progress",
+          "timestamp": "2026-07-11T06:35:13.525Z"
+        },
+        {
+          "state": "completed",
+          "timestamp": "2026-07-11T06:48:29.350Z"
+        },
+        {
+          "state": "in_progress",
+          "timestamp": "2026-07-11T06:48:50.249Z"
+        },
+        {
+          "state": "completed",
+          "timestamp": "2026-07-11T06:57:41.361Z"
+        }
+      ],
+      "tags": [
+        "revisit"
+      ]
+    },
+    "1": {
+      "state": "completed",
+      "notes": "",
+      "checklist": [],
+      "images": [],
+      "startDate": "2026-07-13",
+      "endDate": "2026-07-13",
+      "workedDates": [
+        "2026-07-13"
+      ],
+      "stateHistory": [
+        {
+          "state": "backlog",
+          "timestamp": "2026-07-13T15:28:19.368Z"
+        },
+        {
+          "state": "in_progress",
+          "timestamp": "2026-07-13T15:29:19.368Z"
+        },
+        {
+          "state": "backlog",
+          "timestamp": "2026-07-13T15:29:25.968Z"
+        },
+        {
+          "state": "completed",
+          "timestamp": "2026-07-13T15:33:03.118Z"
+        },
+        {
+          "state": "in_progress",
+          "timestamp": "2026-07-13T15:33:06.467Z"
+        },
+        {
+          "state": "completed",
+          "timestamp": "2026-07-13T15:45:29.861Z"
+        }
+      ],
+      "tags": [
+        "revisit",
+        "needs more work"
+      ]
+    }
+  },
+  "Day 4": {
+    "0": {
+      "state": "completed",
+      "notes": "",
+      "checklist": [
+        {
+          "id": "1783753609505",
+          "text": "spider all types 70 bpm",
+          "done": true
+        },
+        {
+          "id": "1783753625822",
+          "text": "pinky finger and similar 60 bpm",
+          "done": true
+        },
+        {
+          "id": "1783753658205",
+          "text": "1 min chord changes em ,a, f, c, g, d",
+          "done": true
+        },
+        {
+          "id": "1783753672586",
+          "text": "down strum chord changes",
+          "done": true
+        }
+      ],
+      "images": [],
+      "startDate": "2026-07-14",
+      "endDate": "2026-07-14",
+      "workedDates": [
+        "2026-07-14"
+      ],
+      "stateHistory": [
+        {
+          "state": "backlog",
+          "timestamp": "2026-07-14T16:08:21.236Z"
+        },
+        {
+          "state": "in_progress",
+          "timestamp": "2026-07-14T16:09:21.236Z"
+        },
+        {
+          "state": "backlog",
+          "timestamp": "2026-07-14T16:09:29.122Z"
+        },
+        {
+          "state": "in_progress",
+          "timestamp": "2026-07-14T16:10:15.831Z"
+        },
+        {
+          "state": "completed",
+          "timestamp": "2026-07-14T16:29:52.731Z"
+        }
+      ],
+      "tags": []
+    }
+  },
+  "Day 8": {
+    "0": {
+      "state": "backlog",
+      "notes": "",
+      "checklist": [
+        {
+          "id": "1783753904085",
+          "text": "1 min chord changes between all pairs of chords",
+          "done": false
+        },
+        {
+          "id": "1783753933986",
+          "text": "rhythm chord changes with metronome",
+          "done": false
+        },
+        {
+          "id": "1783753952820",
+          "text": "pinky finger exercise for all fingers",
+          "done": false
+        },
+        {
+          "id": "1783753989419",
+          "text": "spider exercises all types 90 bpm",
+          "done": false
+        }
+      ],
+      "images": [],
+      "startDate": "",
+      "endDate": "",
+      "workedDates": [],
+      "stateHistory": [],
+      "tags": []
+    }
+  },
+  "Day 5": {
+    "0": {
+      "state": "backlog",
+      "notes": "",
+      "checklist": [
+        {
+          "id": "1784127695068",
+          "text": "spider exercise all types 80 bpm",
+          "done": false
+        },
+        {
+          "id": "1784127713701",
+          "text": "pinky finger exercise 70 bpm",
+          "done": false
+        },
+        {
+          "id": "1784127791266",
+          "text": "1 min chord changes Em, A ,Am, F, C, G, D",
+          "done": false
+        },
+        {
+          "id": "1784127826465",
+          "text": "down up 60 bpm chord changes",
+          "done": false
+        },
+        {
+          "id": "1784127928364",
+          "text": "learn Bm chord",
+          "done": false
+        }
+      ],
+      "images": [],
+      "startDate": "",
+      "endDate": "",
+      "workedDates": [],
+      "stateHistory": [],
+      "tags": []
+    }
+  },
+  "Day 6": {
+    "0": {
+      "state": "backlog",
+      "notes": "",
+      "checklist": [
+        {
+          "id": "1784127964598",
+          "text": "spider exercise all types 80 bpm",
+          "done": false
+        },
+        {
+          "id": "1784127997364",
+          "text": "practice with Justin guitar app some songs",
+          "done": false
+        },
+        {
+          "id": "1784128088330",
+          "text": "1 min changes Em, A,Am,F,Bm,C,D,G",
+          "done": false
+        },
+        {
+          "id": "1784128104446",
+          "text": "down up chord changes 60 bpm",
+          "done": false
+        },
+        {
+          "id": "1784128128630",
+          "text": "pinky finger exercise",
+          "done": false
+        }
+      ],
+      "images": [],
+      "startDate": "",
+      "endDate": "",
+      "workedDates": [],
+      "stateHistory": [],
+      "tags": []
+    }
+  },
+  "Day 7": {
+    "0": {
+      "state": "backlog",
+      "notes": "",
+      "checklist": [
+        {
+          "id": "1784128252795",
+          "text": "practice songs from module 1",
+          "done": false
+        },
+        {
+          "id": "1784128798797",
+          "text": "80 bpm metronome spider exercis",
+          "done": false
+        },
+        {
+          "id": "1784128815614",
+          "text": "80 bpm pinky finger exercise",
+          "done": false
+        }
+      ],
+      "images": [],
+      "startDate": "",
+      "endDate": "",
+      "workedDates": [],
+      "stateHistory": [],
       "tags": []
     }
   }
